@@ -2,15 +2,13 @@
 {
 	public class CharacterService : ICharacterService
 	{
-
+		private readonly IMapper _mapper;
+		private readonly DataContext _db;
 		private readonly List<Character> characters = new()
 		{
 			new Character(),
 			new Character {Id = 1, Name = "Sam"}
 		};
-		private readonly IMapper _mapper;
-		private readonly DataContext _db;
-
 		public CharacterService(IMapper mapper, DataContext db)
 		{
 			_mapper = mapper;
@@ -21,10 +19,12 @@
 		{
 			var serviceResponse = new ServiceResponse<List<GetCharacterDTO>>();
 			var character = _mapper.Map<Character>(addCharacter);
-			character.Id = characters.Max(c => c.Id) + 1;
-			characters.Add(character);
-			characters.Add(_mapper.Map<Character>(addCharacter));
-			serviceResponse.Data = _mapper.Map<List<GetCharacterDTO>>(characters);
+
+			_db.Characters.Add(character);
+			await _db.SaveChangesAsync();
+
+			serviceResponse.Data = await _db.Characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToListAsync();
+
 			return serviceResponse;
 		}
 
@@ -66,8 +66,8 @@
 		public async Task<ServiceResponse<GetCharacterDTO>> GetCharacterById(int id)
 		{
 			var serviceResponse = new ServiceResponse<GetCharacterDTO>();
-			var character = characters.FirstOrDefault(x => x.Id == id);
-			serviceResponse.Data = _mapper.Map<GetCharacterDTO>(character);
+			var dbCharacter = await _db.Characters.FirstOrDefaultAsync(c => c.Id == id);
+			serviceResponse.Data = _mapper.Map<GetCharacterDTO>(dbCharacter);
 			return serviceResponse;
 		}
 
