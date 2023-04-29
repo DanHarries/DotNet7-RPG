@@ -9,10 +9,12 @@
 			new Character {Id = 1, Name = "Sam"}
 		};
 		private readonly IMapper _mapper;
+		private readonly DataContext _db;
 
-		public CharacterService(IMapper mapper)
+		public CharacterService(IMapper mapper, DataContext db)
 		{
 			_mapper = mapper;
+			_db = db;
 		}
 
 		public async Task<ServiceResponse<List<GetCharacterDTO>>> AddCharacter(AddCharacterDTO addCharacter)
@@ -52,10 +54,11 @@
 
 		public async Task<ServiceResponse<List<GetCharacterDTO>>> GetAllCharacters()
 		{
-			var serviceResponse = new ServiceResponse<List<GetCharacterDTO>>
-			{
-				Data = _mapper.Map<List<GetCharacterDTO>>(characters)
-			};
+			var serviceResponse = new ServiceResponse<List<GetCharacterDTO>>();
+
+			var dbCharacters = await _db.Characters.ToListAsync();
+
+			serviceResponse.Data = _mapper.Map<List<GetCharacterDTO>>(dbCharacters);
 
 			return serviceResponse;
 		}
