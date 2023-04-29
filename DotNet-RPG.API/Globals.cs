@@ -1,0 +1,1 @@
+﻿global using DotNet_RPG.API.Models;
