@@ -47,7 +47,7 @@ namespace DotNet_RPG.API.Controllers
 				return NotFound(res);
 			}
 
-			return Ok();
+			return Ok(res);
 
 		}
 
@@ -62,7 +62,7 @@ namespace DotNet_RPG.API.Controllers
 				return NotFound(res);
 			}
 
-			return Ok();
+			return Ok(res);
 
 		}
 	}

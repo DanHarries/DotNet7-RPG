@@ -4,11 +4,7 @@
 	{
 		private readonly IMapper _mapper;
 		private readonly DataContext _db;
-		private readonly List<Character> characters = new()
-		{
-			new Character(),
-			new Character {Id = 1, Name = "Sam"}
-		};
+
 		public CharacterService(IMapper mapper, DataContext db)
 		{
 			_mapper = mapper;
@@ -34,13 +30,13 @@
 
 			try
 			{
-				var character = characters.FirstOrDefault(c => c.Id == id);
-				if (character is null)
-					throw new Exception($"Character with Id '{id}' not found.");
+				var character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == id) ?? throw new Exception($"Character with Id '{id}' not found.");
 
-				characters.Remove(character);
+				_db.Characters.Remove(character);
 
-				serviceResponse.Data = characters.Select(_mapper.Map<GetCharacterDTO>).ToList();
+				await _db.SaveChangesAsync();
+
+				serviceResponse.Data = await _db.Characters.Select(c => _mapper.Map<GetCharacterDTO>(c)).ToListAsync();
 			}
 			catch (Exception ex)
 			{
