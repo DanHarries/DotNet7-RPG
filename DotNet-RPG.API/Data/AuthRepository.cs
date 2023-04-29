@@ -1,12 +1,18 @@
-﻿namespace DotNet_RPG.API.Data
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+
+namespace DotNet_RPG.API.Data
 {
 	public class AuthRepository : IAuthRepository
 	{
 		private readonly DataContext _context;
+		private readonly IConfiguration _config;
 
-		public AuthRepository(DataContext context)
+		public AuthRepository(DataContext context, IConfiguration config)
 		{
 			_context = context;
+			_config = config;
 		}
 
 
@@ -29,7 +35,7 @@
 			}
 			else
 			{
-				res.Data = user.Id.ToString();
+				res.Data = CreateToken(user);
 			}
 
 			return res;
@@ -78,6 +84,42 @@
 			using var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt);
 			var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 			return computedHash.SequenceEqual(passwordHash);
+		}
+
+		private string CreateToken(User user)
+		{
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+				new Claim(ClaimTypes.Name, user.Username)
+			};
+
+			var appSettingsToken = _config.GetSection("AppSettings:Token").Value;
+
+			if (appSettingsToken is null)
+			{
+				throw new Exception("AppSettings Token is null!");
+			}
+
+			SymmetricSecurityKey key = new(System.Text.Encoding.UTF8.GetBytes(appSettingsToken));
+
+			SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha512Signature);
+
+			// Create final token
+			var tokenDescriptor = new SecurityTokenDescriptor
+			{
+				Subject = new ClaimsIdentity(claims),
+				Expires = DateTime.Now.AddDays(1),
+				SigningCredentials = creds
+			};
+
+			// Need JWT security handler
+			JwtSecurityTokenHandler handler = new();
+			SecurityToken token = handler.CreateToken(tokenDescriptor);
+
+			// Serialize into JWT
+			return handler.WriteToken(token);
+
 		}
 	}
 }

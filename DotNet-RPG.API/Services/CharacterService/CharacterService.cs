@@ -48,11 +48,11 @@
 		}
 
 
-		public async Task<ServiceResponse<List<GetCharacterDTO>>> GetAllCharacters()
+		public async Task<ServiceResponse<List<GetCharacterDTO>>> GetAllCharacters(int userId)
 		{
 			var serviceResponse = new ServiceResponse<List<GetCharacterDTO>>();
 
-			var dbCharacters = await _db.Characters.ToListAsync();
+			var dbCharacters = await _db.Characters.Where(x => x.User!.Id == userId).ToListAsync();
 
 			serviceResponse.Data = _mapper.Map<List<GetCharacterDTO>>(dbCharacters);
 

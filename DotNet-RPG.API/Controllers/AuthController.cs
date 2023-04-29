@@ -5,7 +5,7 @@ namespace DotNet_RPG.API.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
-	public class AuthController : Controller
+	public class AuthController : ControllerBase
 	{
 		private readonly IAuthRepository _auth;
 
