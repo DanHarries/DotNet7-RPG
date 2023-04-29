@@ -6,25 +6,34 @@ namespace DotNet_RPG.API.Controllers
 	[Route("api/[controller]")]
 	public class CharacterController : Controller
 	{
-		private readonly List<Character> characters = new()
+		private readonly ICharacterService _characterService;
+
+		public CharacterController(ICharacterService characterService)
 		{
-			new Character(),
-			new Character {Id = 1, Name = "Sam"}
-		};
+			_characterService = characterService;
+		}
 
 		[HttpGet("GetAll")]
-		public ActionResult<List<Character>> Get()
+		public async Task<ActionResult<ServiceResponse<List<GetCharacterDTO>>>> Get()
 		{
 
-			return Ok(characters);
+			return Ok(await _characterService.GetAllCharacters());
 
 		}
 
 		[HttpGet("{id}")]
-		public ActionResult<Character> GetSingle(int id)
+		public async Task<ActionResult<ServiceResponse<GetCharacterDTO>>> GetSingle(int id)
 		{
 
-			return Ok(characters.FirstOrDefault(x => x.Id == id));
+			return Ok(await _characterService.GetCharacterById(id));
+
+		}
+
+		[HttpPost]
+		public async Task<ActionResult<List<ServiceResponse<GetCharacterDTO>>>> AddCharacter(AddCharacterDTO character)
+		{
+
+			return Ok(await _characterService.AddCharacter(character));
 
 		}
 	}
