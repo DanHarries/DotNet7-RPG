@@ -32,6 +32,7 @@
 
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync();
+			res.Message = "User successfully created";
 			res.Data = user.Id;
 
 			return res;

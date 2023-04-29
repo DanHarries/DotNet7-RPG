@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DotNet_RPG.API.Dtos.User;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet_RPG.API.Controllers
 {
@@ -6,9 +7,28 @@ namespace DotNet_RPG.API.Controllers
 	[Route("[controller]")]
 	public class AuthController : Controller
 	{
-		public IActionResult Index()
+		private readonly IAuthRepository _auth;
+
+		public AuthController(IAuthRepository auth)
 		{
-			return View();
+			_auth = auth;
+		}
+
+		[HttpPost]
+		[Route("Register")]
+		public async Task<ActionResult<ServiceResponse<int>>> Register(UserRegisterDTO request)
+		{
+			var res = await _auth.Register(
+				new User { Username = request.Username }, request.Password
+			);
+
+			if (!res.Success)
+			{
+				return BadRequest(res);
+			}
+
+
+			return Ok(res);
 		}
 	}
 }
