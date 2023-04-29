@@ -77,9 +77,7 @@
 
 			try
 			{
-				var character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
-				if (character is null)
-					throw new Exception($"Character with Id '{updatedCharacter.Id}' not found.");
+				var character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id) ?? throw new Exception($"Character with Id '{updatedCharacter.Id}' not found.");
 
 				character.Name = updatedCharacter.Name;
 				character.HitPoints = updatedCharacter.HitPoints;
@@ -87,6 +85,8 @@
 				character.Defense = updatedCharacter.Defense;
 				character.Intelligence = updatedCharacter.Intelligence;
 				character.Class = updatedCharacter.Class;
+
+				await _db.SaveChangesAsync();
 
 				serviceResponse.Data = _mapper.Map<GetCharacterDTO>(character);
 			}
