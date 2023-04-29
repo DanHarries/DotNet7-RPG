@@ -14,13 +14,25 @@ namespace DotNet_RPG.API.Controllers
 			_auth = auth;
 		}
 
-		[HttpPost]
-		[Route("Register")]
+		[HttpPost("Register")]
 		public async Task<ActionResult<ServiceResponse<int>>> Register(UserRegisterDTO request)
 		{
 			var res = await _auth.Register(
 				new User { Username = request.Username }, request.Password
 			);
+
+			if (!res.Success)
+			{
+				return BadRequest(res);
+			}
+
+			return Ok(res);
+		}
+
+		[HttpPost("Login")]
+		public async Task<ActionResult<ServiceResponse<string>>> Login(UserRegisterDTO request)
+		{
+			var res = await _auth.Login(request.Username, request.Password);
 
 			if (!res.Success)
 			{
