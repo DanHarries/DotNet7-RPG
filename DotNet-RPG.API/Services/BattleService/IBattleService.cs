@@ -6,5 +6,8 @@ namespace DotNet_RPG.API.Services.BattleService
 	{
 		Task<ServiceResponse<AttackResultDTO>> WeaponAttack(WeaponAttackDTO attack);
 		Task<ServiceResponse<AttackResultDTO>> SkillAttack(SkillAttackDTO attack);
+		Task<ServiceResponse<FightResultDTO>> Fight(FightRequestDTO req);
+
+
 	}
 }

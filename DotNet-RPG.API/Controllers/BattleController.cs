@@ -26,5 +26,11 @@ namespace DotNet_RPG.API.Controllers
 		{
 			return Ok(await _battle.SkillAttack(request));
 		}
+
+		[HttpPost]
+		public async Task<ActionResult<ServiceResponse<FightResultDTO>>> Fight(FightRequestDTO request)
+		{
+			return Ok(await _battle.Fight(request));
+		}
 	}
 }
