@@ -1,4 +1,6 @@
-﻿namespace DotNet_RPG.API
+﻿using DotNet_RPG.API.Dtos.Weapon;
+
+namespace DotNet_RPG.API
 {
 	public class AutoMapperProfile : Profile
 	{
@@ -6,6 +8,7 @@
 		{
 			CreateMap<Character, GetCharacterDTO>();
 			CreateMap<AddCharacterDTO, Character>();
+			CreateMap<Weapon, GetWeaponDTO>();
 		}
 
 
