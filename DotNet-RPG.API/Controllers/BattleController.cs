@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DotNet_RPG.API.Dtos.Battle;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet_RPG.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	[ApiController]
 	public class BattleController : ControllerBase
 	{
@@ -11,6 +12,19 @@ namespace DotNet_RPG.API.Controllers
 		public BattleController(IBattleService battle)
 		{
 			_battle = battle;
+		}
+
+
+		[HttpPost("Weapon")]
+		public async Task<ActionResult<ServiceResponse<AttackResultDTO>>> WeaponAttack(WeaponAttackDTO request)
+		{
+			return Ok(await _battle.WeaponAttack(request));
+		}
+
+		[HttpPost("Skill")]
+		public async Task<ActionResult<ServiceResponse<AttackResultDTO>>> SkillAttack(SkillAttackDTO request)
+		{
+			return Ok(await _battle.SkillAttack(request));
 		}
 	}
 }
