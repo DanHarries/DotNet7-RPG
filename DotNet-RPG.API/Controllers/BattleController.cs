@@ -32,5 +32,12 @@ namespace DotNet_RPG.API.Controllers
 		{
 			return Ok(await _battle.Fight(request));
 		}
+
+
+		[HttpGet]
+		public async Task<ActionResult<ServiceResponse<List<HighScoreDTO>>>> GetHighScore()
+		{
+			return Ok(await _battle.GetHighScore());
+		}
 	}
 }

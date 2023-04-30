@@ -8,6 +8,7 @@ namespace DotNet_RPG.API.Services.BattleService
 		Task<ServiceResponse<AttackResultDTO>> SkillAttack(SkillAttackDTO attack);
 		Task<ServiceResponse<FightResultDTO>> Fight(FightRequestDTO req);
 
+		Task<ServiceResponse<List<HighScoreDTO>>> GetHighScore();
 
 	}
 }

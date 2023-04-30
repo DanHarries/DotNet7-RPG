@@ -5,10 +5,12 @@ namespace DotNet_RPG.API.Services.BattleService
 	public class BattleService : IBattleService
 	{
 		private readonly DataContext _context;
+		private readonly IMapper _mapper;
 
-		public BattleService(DataContext context)
+		public BattleService(DataContext context, IMapper mapper)
 		{
 			_context = context;
+			_mapper = mapper;
 		}
 
 
@@ -61,8 +63,6 @@ namespace DotNet_RPG.API.Services.BattleService
 
 			return res;
 		}
-
-
 
 		public async Task<ServiceResponse<AttackResultDTO>> SkillAttack(SkillAttackDTO req)
 		{
@@ -122,8 +122,6 @@ namespace DotNet_RPG.API.Services.BattleService
 
 			return res;
 		}
-
-
 
 		public async Task<ServiceResponse<FightResultDTO>> Fight(FightRequestDTO req)
 		{
@@ -205,6 +203,23 @@ namespace DotNet_RPG.API.Services.BattleService
 				return response;
 			}
 
+
+
+		}
+
+		public async Task<ServiceResponse<List<HighScoreDTO>>> GetHighScore()
+		{
+			var characters = await _context.Characters
+				.Where(x => x.Fights > 0)
+				.OrderByDescending(x => x.Victories)
+				.ThenBy(x => x.Defeats).ToListAsync();
+
+			var res = new ServiceResponse<List<HighScoreDTO>>()
+			{
+				Data = characters.Select(x => _mapper.Map<HighScoreDTO>(x)).ToList(),
+			};
+
+			return res;
 
 
 		}
