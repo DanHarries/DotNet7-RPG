@@ -1,4 +1,5 @@
-﻿using DotNet_RPG.API.Dtos.Weapon;
+﻿using DotNet_RPG.API.Dtos.Skill;
+using DotNet_RPG.API.Dtos.Weapon;
 
 namespace DotNet_RPG.API
 {
@@ -9,6 +10,7 @@ namespace DotNet_RPG.API
 			CreateMap<Character, GetCharacterDTO>();
 			CreateMap<AddCharacterDTO, Character>();
 			CreateMap<Weapon, GetWeaponDTO>();
+			CreateMap<Skill, GetSkillDTO>();
 		}
 
 
