@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace DotNet_RPG.API.Controllers
 {
@@ -19,8 +18,7 @@ namespace DotNet_RPG.API.Controllers
 		[HttpGet("GetAll")]
 		public async Task<ActionResult<ServiceResponse<List<GetCharacterDTO>>>> Get()
 		{
-			int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
-			return Ok(await _characterService.GetAllCharacters(id));
+			return Ok(await _characterService.GetAllCharacters());
 
 		}
 
